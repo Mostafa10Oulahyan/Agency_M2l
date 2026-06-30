@@ -1,0 +1,220 @@
+/* ============================================================
+   M²L — Design System
+   Fonts: Clash Display (display) + Satoshi (body) via Fontshare
+   ============================================================ */
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@300,400,500,700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* ---- Brand palette ---- */
+  --color-ink: #000000;          /* primary background */
+  --color-pine: #003333;         /* dark green — secondary bg */
+  --color-azure: #003152;        /* dark azure — cards */
+  --color-gold: #fdbf2d;         /* primary accent — CTAs */
+  --color-citron: #faf92a;       /* hover accent */
+  --color-martian: #99cc33;      /* premium highlight */
+  --color-forest: #006633;       /* success */
+  --color-sand: #ffcc99;         /* soft neutral */
+  --color-mist: #addff1;         /* cinematic lighting */
+  --color-ruby: #990000;         /* error */
+
+  --color-bone: #f4f1ea;         /* off-white text */
+  --color-haze: #8a9ba3;         /* muted text */
+
+  /* ---- Type ---- */
+  --font-display: "Clash Display", "Satoshi", sans-serif;
+  --font-sans: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Motion ---- */
+  --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-power: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Base — must live in @layer base so Tailwind utilities (which
+   sit in @layer utilities) always win over these resets.
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto; /* Lenis handles scroll */
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: #000;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  /* Hide native cursor on desktop where custom cursor runs */
+  @media (hover: hover) and (pointer: fine) {
+    body.has-cursor,
+    body.has-cursor * {
+      cursor: none;
+    }
+  }
+
+  ::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+/* ============================================================
+   Helper utilities — in @layer utilities so they compose with
+   Tailwind and can intentionally override color/size utilities.
+   ============================================================ */
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .display-hero {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(100deg, #fdbf2d 0%, #faf92a 45%, #99cc33 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-mist {
+    background: linear-gradient(120deg, #addff1 0%, #99cc33 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(244, 241, 234, 0.32);
+  }
+
+  .glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .hairline {
+    border-color: rgba(244, 241, 234, 0.08);
+  }
+
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 49, 82, 0.5) 0%,
+      rgba(0, 51, 51, 0.28) 100%
+    );
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(173, 223, 241, 0.1);
+  }
+
+  .clip-reveal {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  /* oversized editorial statement type */
+  .statement {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  /* a dim word that lights up on scroll (manifesto) */
+  .word-dim {
+    color: rgba(244, 241, 234, 0.16);
+    transition: color 0.1s linear;
+  }
+
+  /* duotone-ish cinematic image treatment */
+  .cine-img {
+    filter: saturate(1.05) contrast(1.05);
+  }
+
+  .ken {
+    animation: ken 18s ease-in-out infinite alternate;
+  }
+
+  .noise-soft {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(244, 241, 234, 0.08) 1px,
+      transparent 0
+    );
+    background-size: 4px 4px;
+  }
+}
+
+@keyframes ken {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.12) translate(-1.5%, -1.5%); }
+}
+
+/* ============================================================
+   Atmosphere — grain overlay (top-level: fixed full-screen layer)
+   ============================================================ */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 7s steps(8) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-4%, -4%); }
+  30% { transform: translate(3%, -2%); }
+  50% { transform: translate(-2%, 3%); }
+  70% { transform: translate(4%, 2%); }
+  90% { transform: translate(-3%, 1%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain::after { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
