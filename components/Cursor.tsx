@@ -1,19 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
 /**
  * Dual-layer cursor: a precise dot + a lagging ring. Grows and labels itself
- * over interactive elements tagged with [data-cursor].
+ * over interactive elements tagged with [data-cursor]. Enabled on any
+ * hover-capable pointer (not tied to a width breakpoint) so it also works
+ * over the mobile menu when opened on a narrow desktop window.
  */
 export default function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLSpanElement>(null);
+  const [enabled, setEnabled] = useState(false);
+
+  // detect a fine, hover-capable pointer once on mount
+  useEffect(() => {
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      setEnabled(true);
+    }
+  }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(hover: none)").matches) return;
+    if (!enabled) return;
     document.body.classList.add("has-cursor");
 
     const xTo = gsap.quickTo(ring.current, "x", { duration: 0.5, ease: "power3" });
@@ -69,10 +79,12 @@ export default function Cursor() {
       document.removeEventListener("mouseover", over);
       document.removeEventListener("mouseout", out);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[100] hidden md:block">
+    <div className="pointer-events-none fixed inset-0 z-[210]">
       <div
         ref={ring}
         className="absolute -left-5 -top-5 flex h-10 w-10 items-center justify-center rounded-full border"
